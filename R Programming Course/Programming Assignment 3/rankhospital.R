@@ -1,8 +1,16 @@
 rankhospital <- function(state,outcome,num = "best") {
+	## read in data, must be in same working directory as this .R file
 	full_data <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
+	
+	## Error check for state and outcome. If state isn't in the list of states, stop. If outcome isn't one of three specified, stop.
 	if (!(state %in% full_data[,7])) stop("invalid state")
 	if (!(outcome %in% c("heart attack", "heart failure", "pneumonia"))) stop("invalid outcome")
 
+	## Three similar if statements, one per outcome.
+	## Clean up the data by turning "Not Available" to NA, turning the outcome to numeric, and then chopping to only three columns of interest
+	## Filter to only the state provided, then order the data by outcome and hospital name
+	## Use the row numbers as the rank after ordering the data, and add that column to the data
+	## Depending on user input, return the hospital name corresponding to the requested rank (or best/worst)
 	if (outcome == "heart attack") {
 		full_data<-full_data[!full_data[,11]=="Not Available",] 						
 		full_data[,11] <- as.numeric(full_data[,11]) 								

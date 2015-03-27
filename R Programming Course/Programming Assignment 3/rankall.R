@@ -23,12 +23,15 @@ rankall <- function(outcome, num = "best") {
 	
 	## splits the dataset by state, and crops it to three columns of interest
 	state_data <- split(full_data[,c(2,7,column)],full_data$State)
-	## sorts the split data by the outcome measure and hospital name (for ties)
+	## state data is now a list of dataframes, one for each state
+	## using that list, can use lapply to do the same function to each state
+	## next portion sorts the split data by the outcome measure and hospital name (for ties)
 	state_data <- lapply(state_data, function(x) x[order(x[3], x[1]),])			
+	## resulting state_data is a list of dataframes all ordered by the outcome measure
+	## next step is to select the appropriate observation from each state and put it in a separate dataframe
 	
 	## If/else code for the different "num" options
-	## If num is best, loops through each state and retrieves the first hospital
-	if (num=="best") {
+	if (num=="best") {							## If num is best, loops through each state and retrieves the first hospital
 		hospital <- lapply(state_data, function(x) x[1,1])
 	} else if (num=="worst") {					## if worst, grabs the last hospital, using nrow
 		hospital <- lapply(state_data, function(x) x[nrow(x),1])
@@ -43,3 +46,5 @@ rankall <- function(outcome, num = "best") {
 	results
 
 }
+## Could do a better job with naming here. Column isn't very telling (maybe outcome_col)
+## and hospital isn't a good name for the list at the end (maybe output_hospitals)
